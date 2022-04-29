@@ -29,7 +29,7 @@ export const getNotes = createAsyncThunk(
   }
 )
 
-// create ticket note
+// create ticket note :)
 export const createNote = createAsyncThunk(
   'notes/create',
   async ({ noteText, ticketId }, thunkAPI) => {
