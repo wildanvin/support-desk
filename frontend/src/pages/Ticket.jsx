@@ -4,21 +4,20 @@ import Modal from 'react-modal'
 import { FaPlus } from 'react-icons/fa'
 import { useSelector, useDispatch } from 'react-redux'
 import { getTicket, reset, closeTicket } from '../features/tickets/ticketSlice'
-// import {
-//   getNotes,
-//   createNote,
-//   reset as notesReset,
-// } from '../features/notes/noteSlice'
+import { getNotes, reset as notesReset } from '../features/notes/noteSlice'
 import { useParams, useNavigate } from 'react-router-dom'
 import BackButton from '../components/BackButton'
 import Spinner from '../components/Spinner'
-//import NoteItem from '../components/NoteItem'
+import NoteItem from '../components/NoteItem'
 
 function Ticket() {
   const { ticket, isLoading, isSuccess, isError, message } = useSelector(
     (state) => state.tickets
   )
 
+  const { notes, isLoading: notesIsLoading } = useSelector(
+    (state) => state.notes
+  )
   const params = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -30,6 +29,7 @@ function Ticket() {
     }
 
     dispatch(getTicket(ticketId))
+    dispatch(getNotes(ticketId))
   }, [isError, message, ticketId])
 
   const onTicketClose = () => {
@@ -38,7 +38,7 @@ function Ticket() {
     navigate('/tickets')
   }
 
-  if (isLoading) {
+  if (isLoading || notesIsLoading) {
     return <Spinner />
   }
 
@@ -49,7 +49,7 @@ function Ticket() {
   return (
     <div className='ticket-page'>
       <header className='ticket-header'>
-        <BackButton url='tickets' />
+        <BackButton url='/tickets' />
         <h2>
           Ticket ID : {ticket._id}
           <span className={`status status-${ticket.status}`}>
@@ -65,7 +65,12 @@ function Ticket() {
           <h3>Description of Issue</h3>
           <p>{ticket.description}</p>
         </div>
+        <h2>Notes</h2>
       </header>
+
+      {notes.map((note) => (
+        <NoteItem key={note._id} note={note} />
+      ))}
       {ticket.status !== 'closed' && (
         <button onClick={onTicketClose} className='btn btn-block btn-danger'>
           Close ticket
