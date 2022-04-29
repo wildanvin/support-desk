@@ -60,7 +60,7 @@ function Ticket() {
     navigate('/tickets')
   }
 
-  // Create note submit
+  // Create note submit :)
   const onNoteSubmit = (e) => {
     e.preventDefault()
     dispatch(createNote({ noteText, ticketId }))
